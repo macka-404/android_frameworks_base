@@ -975,6 +975,9 @@ public class CentralSurfacesImpl extends CoreStartable implements
             Log.v(TAG, "start(): no wallpaper service ");
         }
 
+        mSbSettingsObserver.observe();
+        mSbSettingsObserver.update();
+
         // Set up the initial notification state. This needs to happen before CommandQueue.disable()
         setUpPresenter();
 
@@ -4059,6 +4062,41 @@ public class CentralSurfacesImpl extends CoreStartable implements
     @Override
     public boolean isDeviceInteractive() {
         return mDeviceInteractive;
+    }
+
+    private SbSettingsObserver mSbSettingsObserver = new SbSettingsObserver(mMainHandler);
+    private class SbSettingsObserver extends ContentObserver {
+        SbSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN))) {
+                setLockscreenDoubleTapToSleep();
+            }
+        }
+
+        public void update() {
+            setLockscreenDoubleTapToSleep();
+        }
+    }
+
+    private void setLockscreenDoubleTapToSleep() {
+        boolean isDoubleTapLockscreenEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN, 0, UserHandle.USER_CURRENT) == 1;
+        if (mNotificationPanelViewController != null) {
+            mNotificationPanelViewController.setLockscreenDoubleTapToSleep(isDoubleTapLockscreenEnabled);
+        }
     }
 
     private final BroadcastReceiver mBannerActionBroadcastReceiver = new BroadcastReceiver() {
