@@ -22,4 +22,7 @@
     <!-- Bluetooth dialog -->
     <dimen name="internet_dialog_wifi_toggle_height">56dp</dimen>
     <dimen name="bluetooth_dialog_active_device_bottom_margin">4dp</dimen>
+
+    <!-- Screenrecord -->
+    <dimen name="screenrecord_dot_size">48dp</dimen>
 </resources>
