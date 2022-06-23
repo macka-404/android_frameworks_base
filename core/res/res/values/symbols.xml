@@ -4882,4 +4882,8 @@
 
   <java-symbol type="bool" name="system_server_plays_face_haptics" />
   <java-symbol type="integer" name="config_maximumDelayTimeToDeactivateDataCall" />
+
+  <!-- Light / Regular style fonts -->
+  <java-symbol type="string" name="config_lightFontFamily" />
+
 </resources>
